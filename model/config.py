@@ -1,7 +1,7 @@
 DB_CONFIG={
     'host': 'localhost',
-    'user': 'root',
-    'password':'pranjali@#115',
+    'user': 'xyz',
+    'password':'abc',
     'database': 'parentdb'
 }
 
