@@ -1,0 +1,68 @@
+import { Component } from '@angular/core';
+import { AttendanceService } from '../services/attendance.service';
+import { NgFor } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-employee-attendance',
+  imports: [NgFor, FormsModule],
+  templateUrl: './employee-attendance.component.html',
+  styleUrls: ['./employee-attendance.component.css']
+})
+export class EmployeeAttendanceComponent {
+
+  employees: any[] = [];  
+  employeeRecords: any[] = []; 
+
+  newAttendance = {
+    employeeId: '',
+    name: '',
+    date: '',
+    checkedIn: '',
+    checkedOut: ''
+  };
+
+  checkInStatus = true;  // Track if it's check-in (true) or check-out (false)
+  checkInClickCount = 0; // To toggle check-in and check-out
+
+  constructor(private attendanceService: AttendanceService) {}
+
+  ngOnInit() {
+    this.attendanceService.getAttendanceList().subscribe((data: any) => {
+      console.log(data);
+      this.employees = data;
+    });
+  }
+
+  // submitAttendance() {
+  //   const currentDate = new Date();
+  //   this.newAttendance.date = currentDate.toISOString().split('T')[0];
+  //   this.newAttendance.checkedIn = this.checkInStatus ? currentDate.toTimeString().split(' ')[0] : '';
+  //   this.newAttendance.checkedOut = !this.checkInStatus ? currentDate.toTimeString().split(' ')[0] : '';
+
+  //   // Toggle between check-in and check-out states
+  //   if (this.checkInClickCount % 2 === 0) {
+  //     this.checkInStatus = true;
+  //     this.newAttendance.checkedIn = currentDate.toTimeString().split(' ')[0];  // Set check-in time
+  //   } else {
+  //     this.checkInStatus = false;
+  //     this.newAttendance.checkedOut = currentDate.toTimeString().split(' ')[0];  // Set check-out time
+  //   }
+
+  //   this.attendanceService.saveAttendance(this.newAttendance).subscribe((res) => {
+  //     console.log('Attendance saved', res);
+  //     // After saving attendance, fetch latest records for the employee
+  //     this.fetchEmployeeRecords();
+  //     this.checkInClickCount++; // Toggle click state (check-in / check-out)
+  //     this.newAttendance = { employeeId: '', name: '', date: '', checkedIn: '', checkedOut: '' }; // Reset form
+  //   });
+  // }
+
+  fetchEmployeeRecords() {
+    if (this.newAttendance.employeeId) {
+      const employeeId = this.newAttendance.employeeId;
+      const employeeData = this.employees.filter(emp => emp.employeeId === employeeId);
+      // this.employeeRecords = employeeData.slice(Math.max(employeeData.length - 5, 0));
+    }
+  }
+}
